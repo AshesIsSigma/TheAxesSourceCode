@@ -1,0 +1,366 @@
+REMEMBER THIS IS NOT ALL OF IT THERE ARE SOME THINGS THAT I CANT DECODE :(
+
+import os
+os.system("pip install -r requirements.txt")
+os.system("pip install colorama")
+import discord 
+from discord.ext import commands
+os.system('pip install bs4')
+os.system('pip install pyfiglet')
+import random, asyncio, json, threading, requests, subprocess,base64, codecs, smtplib, datetime, sys, pyfiglet, httpx, re
+from colorama import Fore
+from discord import Permissions
+
+
+
+
+# Axe Selfbot
+os.system('clear')
+
+token = os.getenv('token')
+prefix = input("Enter Prefix -> ")
+## Made By TheAxes
+intents = discord.Intents.all()
+intents.members = True
+header = {"Authorization": f'Bot {token}'}
+stream_url= "https://www.twitch.tv/rpcfordcbytheaxes"
+
+axeop = commands.Bot(description='AXE SELFBOT', command_prefix=prefix, intents=intents, case_insensitive=True, self_bot=True)
+axeop.remove_command('help')
+
+snipe_message_author = {}
+snipe_message_content = {}
+snipetime = {}
+
+@axeop.event
+async def on_message_delete(message):
+  snipe_message_author[message.channel.id] = message.author
+  snipe_message_content[message.channel.id] = message.content
+  snipetime[message.channel.id] = datetime.datetime.now()
+  
+                      
+
+date_format = "%a, %d %b %Y %I:%M %p"
+timestamp=datetime.datetime.utcnow()
+
+def axeontop():
+    os.system('title AXE SELFBOT && cls' if os.name=='nt' else 'clear')
+    print(f"{Fore.LIGHTYELLOW_EX} AXE SELFBOT : {Fore.LIGHTCYAN_EX}[INSTALLED]\n{Fore.LIGHTYELLOW_EX} MADE BY : {Fore.LIGHTCYAN_EX}    [TheAxes] {Fore.RESET}")
+
+with open('config.json') as f:
+    config = json.load(f)
+
+namesforchannel = config.get('channelname')
+namesforroles = config.get('rolesname')
+namesforwebhook = config.get('webhooknames')
+webhookmsg = config.get('webhookspammessage')
+remson = config.get('reason')
+
+@axeop.event
+async def on_ready():
+	axeontop()
+	print(f"""{Fore.LIGHTCYAN_EX}
+╔═════════════════════════════╗
+║ {Fore.LIGHTYELLOW_EX}AXE SELFBOT ║ {Fore.LIGHTCYAN_EX}[AUTHORISED]  ║
+╠═════════════════════════════╬
+║ {Fore.LIGHTYELLOW_EX}Connected:  ║  {Fore.LIGHTCYAN_EX}{axeop.user.name}        ║
+╠═════════════════════════════╬
+║ {Fore.LIGHTYELLOW_EX}Prefix :    ║  {Fore.LIGHTCYAN_EX}{prefix}            ║
+╚═════════════════════════════╝{Fore.RESET}
+
+""")
+	
+	
+	
+@axeop.event
+async def on_command_error(ctx, error):
+    error_str = str(error)
+    error = getattr(error, 'original', error)
+    if isinstance(error, commands.CommandNotFound):
+        return
+    elif isinstance(error, commands.CheckFailure):
+        await ctx.send("> • [ERROR]: You Don't Have Permission to execute this command", delete_after=4)
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"> • [ERROR]: Missing arguments: {error}", delete_after=4)
+    elif "Cannot send an empty message" in error_str:
+        await ctx.send( ' > • [ERROR]: Message contents cannot be Empty', delete_after=4)
+    else:
+        ctx.send(f'> • [ERROR]: {error_str}', delete_after=4)
+
+
+def axespam(webhook):
+    while axewspam:
+        randcolor = random.randint(0, 16777215)
+        data = {'content':webhookmsg}
+        spamming = requests.post(webhook, json=data)
+        spammingerror = spamming.text
+        if spamming.status_code == 204:
+            continue
+        if 'rate limited' in spammingerror.lower():
+            try:
+                j = json.loads(spammingerror)
+                ratelimit = j['retry_after']
+                timetowait = ratelimit / 1000
+                time.sleep(timetowait)
+            except:
+                delay = random.randint(5, 10)
+                time.sleep(delay)
+
+        else:
+            delay = random.randint(30, 60)
+            time.sleep(delay)
+            
+
+
+ 	
+            
+@axeop.command(pass_context=True)
+async def help(ctx):
+	await ctx.send(f"""> AXE SELFBOT | HELP COMMAND 
+> • `{prefix}help` - Show This Page
+> • `{prefix}nuke` - Shows Nukes Commands
+> • `{prefix}text` - Shows Text Commands
+> • `{prefix}utilty` - Shows Utilty Commands
+> • `{prefix}misc` - Shows Miscellaneous Commands
+> • `{prefix}status` - Shows Custom Status Commands
+> • `{prefix}fun` - Shows Fun Commands
+> • `{prefix}nsfw` - Shows Nsfw Commands
+> • `{prefix}selfbotinfo` - Shows About Selfbot
+""")
+
+@axeop.command()
+async def fun(ctx):
+	await ctx.message.delete()
+	await ctx.send(f"""> AXE SELFBOT | FUN CMDS
+	> • `{prefix}hack <@user>` - Do A Fake Hacking Process
+	> • `{prefix}fakewizz` - Do A Fake Wizz
+	""")
+	
+
+@axeop.command()
+async def fakewizz(ctx):
+    await ctx.message.delete()
+    if isinstance(ctx.message.channel, discord.TextChannel):
+        print("Prank Wizz Started")
+        initial = random.randrange(0, 60)
+        message = await ctx.send(f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n`Deleting {len(ctx.guild.roles)} Roles...\n`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n`Deleting {len(ctx.guild.roles)} Roles...\nDeleting {len(ctx.guild.text_channels)} Text Channels...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n`Deleting {len(ctx.guild.roles)} Roles...\nDeleting {len(ctx.guild.text_channels)} Text Channels...\nDeleting {len(ctx.guild.voice_channels)} Voice Channels...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n`Deleting {len(ctx.guild.roles)} Roles...\nDeleting {len(ctx.guild.text_channels)} Text Channels...\nDeleting {len(ctx.guild.voice_channels)} Voice Channels...\nDeleting {len(ctx.guild.categories)} Categories...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n`Deleting {len(ctx.guild.roles)} Roles...\nDeleting {len(ctx.guild.text_channels)} Text Channels...\nDeleting {len(ctx.guild.voice_channels)} Voice Channels...\nDeleting {len(ctx.guild.categories)} Categories...\nDeleting Webhooks...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n`Deleting {len(ctx.guild.roles)} Roles...\nDeleting {len(ctx.guild.text_channels)} Text Channels...\nDeleting {len(ctx.guild.voice_channels)} Voice Channels...\nDeleting {len(ctx.guild.categories)} Categories...\nDeleting Webhooks...\nDeleting Emojis`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n`Deleting {len(ctx.guild.roles)} Roles...\nDeleting {len(ctx.guild.text_channels)} Text Channels...\nDeleting {len(ctx.guild.voice_channels)} Voice Channels...\nDeleting {len(ctx.guild.categories)} Categories...\nDeleting Webhooks...\nDeleting Emojis\nInitiating Ban Wave...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.guild.name}, will take {initial} seconds to complete`\n`Deleting {len(ctx.guild.roles)} Roles...\nDeleting {len(ctx.guild.text_channels)} Text Channels...\nDeleting {len(ctx.guild.voice_channels)} Voice Channels...\nDeleting {len(ctx.guild.categories)} Categories...\nDeleting Webhooks...\nDeleting Emojis\nInitiating Ban Wave...\nInitiating Mass-DM`")
+    elif isinstance(ctx.message.channel, discord.DMChannel):
+        initial = random.randrange(1, 60)
+        message = await ctx.send(
+            f"`Wizzing {ctx.message.channel.recipient.name}, will take {initial} seconds to complete`\n")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.message.channel.recipient.name}, will take {initial} seconds to complete`\n`Saving {random.randrange(0, 1000)} Messages...\n`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.message.channel.recipient.name}, will take {initial} seconds to complete`\n`Saving {random.randrange(0, 1000)} Messages...\nCaching {random.randrange(0, 1000)} Messages...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.message.channel.recipient.name}, will take {initial} seconds to complete`\n`Saving {random.randrange(0, 1000)} Messages...\nCaching {random.randrange(0, 1000)} Messages...\nDeleting {random.randrange(0, 1000)} Pinned Messages...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.message.channel.recipient.name}, will take {initial} seconds to complete`\n`Saving {random.randrange(0, 1000)} Messages...\nCaching {random.randrange(0, 1000)} Messages...\nDeleting {random.randrange(0, 1000)} Pinned Messages...\n`")
+    elif isinstance(ctx.message.channel, discord.GroupChannel):
+        initial = random.randrange(1, 60)
+        message = await ctx.send(f"`Wizzing {ctx.message.channel.name}, will take {initial} seconds to complete`\n")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.message.channel.name}, will take {initial} seconds to complete`\n`Saving {random.randrange(0, 1000)} Messages...\n`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.message.channel.name}, will take {initial} seconds to complete`\n`Saving {random.randrange(0, 1000)} Messages...\nCaching {random.randrange(0, 1000)} Messages...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.message.channel.name}, will take {initial} seconds to complete`\n`Saving {random.randrange(0, 1000)} Messages...\nCaching {random.randrange(0, 1000)} Messages...\nDeleting {random.randrange(0, 1000)} Pinned Messages...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Wizzing {ctx.message.channel.name}, will take {initial} seconds to complete`\n`Saving {random.randrange(0, 1000)} Messages...\nCaching {random.randrange(0, 1000)} Messages...\nDeleting {random.randrange(0, 1000)} Pinned Messages...`")
+
+	
+#Status Commands 
+
+@axeop.command(aliases=['watching'])
+async def watch(ctx, *, message):
+	await axeop.change_presence(
+	activity=discord.Activity(
+	type=discord.ActivityType.watching,
+	name=message
+	 ))
+	await ctx.send("> **AXE SELFBOT | WATCHING STATUS CREATED**", delete_after=5)
+    
+    
+@axeop.command(aliases=['listening'])
+async def listen(ctx, *, message):
+	
+	await axeop.change_presence(
+	activity=discord.Activity(
+	type=discord.ActivityType.listening,
+	name=message, 
+	 ))
+	await ctx.send("> **AXE SELFBOT | LISTENING STATUS CREATED**", delete_after=5)
+    
+    
+    
+@axeop.command(aliases=['streaming'])
+async def stream(ctx, *, message):
+	
+	stream = discord.Streaming(
+	name=message,
+	url=stream_url, 
+	 )
+	await axeop.change_presence(activity=stream) 
+	await ctx.send("> **AXE SELFBOT | STREAMING STATUS CREATED**", delete_after=5)
+    
+    
+@axeop.command(aliases=['PLAYING'])
+async def game(ctx, * , message):
+	
+	game = discord.Game(
+	name=message
+	)
+	await axeop.change_presence(activity=game)
+	await ctx.send("> **AXE SELFBOT | PLAYING STATUS CREATED**", delete_after=5)
+    
+    
+@axeop.command(aliases=["stopstreaming", "stopstatus", "stoplistening", "stopplaying", "stopwatching"])
+async def stopactivity(ctx):
+    
+    await axeop.change_presence(activity=None, status=discord.Status.dnd)
+    await ctx.send(content="> **AXE SELFBOT | STOPPED CUSTOM STATUS**", delete_after=5)
+    
+    
+    
+@axeop.command(aliases=["guildinfo"])
+async def serverinfo(ctx):
+	await ctx.send(f"""**Name:** `{ctx.guild.name}`
+**ID:** `{ctx.guild.id}`
+**Owner:** `{ctx.guild.owner}`""")
+    
+
+	
+# Fun Commands
+
+@axeop.command()
+async def hack(ctx, user: discord.Member = None):
+	
+    await ctx.message.delete()
+    gender = ["Male", "Female", "Trans", "Other", "Retard"]
+    age = str(random.randrange(10, 25))
+    height = ['4\'6\"', '4\'7\"', '4\'8\"', '4\'9\"', '4\'10\"', '4\'11\"', '5\'0\"', '5\'1\"', '5\'2\"', '5\'3\"',
+              '5\'4\"', '5\'5\"',
+              '5\'6\"', '5\'7\"', '5\'8\"', '5\'9\"', '5\'10\"', '5\'11\"', '6\'0\"', '6\'1\"', '6\'2\"', '6\'3\"',
+              '6\'4\"', '6\'5\"',
+              '6\'6\"', '6\'7\"', '6\'8\"', '6\'9\"', '6\'10\"', '6\'11\"']
+    weight = str(random.randrange(60, 300))
+    hair_color = ["Black", "Brown", "Blonde", "White", "Gray", "Red"]
+    skin_color = ["White", "Pale", "Brown", "Black", "Light-Skin"]
+    religion = ["Christian", "Muslim", "Atheist", "Hindu", "Buddhist", "Jewish"]
+    sexuality = ["Straight", "Gay", "Homo", "Bi", "Bi-Sexual", "Lesbian", "Pansexual"]
+    education = ["High School", "College", "Middle School", "Elementary School", "Pre School",
+                 "Retard never went to school LOL"]
+    ethnicity = ["White", "African American", "Asian", "Latino", "Latina", "American", "Mexican", "Korean", "Chinese",
+                 "Arab", "Italian", "Puerto Rican", "Non-Hispanic", "Russian", "Canadian", "European", "Indian"]
+    occupation = ["Retard has no job LOL", "Certified discord retard", "Janitor", "Police Officer", "Teacher",
+                  "Cashier", "Clerk", "Waiter", "Waitress", "Grocery Bagger", "Retailer", "Sales-Person", "Artist",
+                  "Singer", "Rapper", "Trapper", "Discord Thug", "Gangster", "Discord Packer", "Mechanic", "Carpenter",
+                  "Electrician", "Lawyer", "Doctor", "Programmer", "Software Engineer", "Scientist"]
+    salary = ["Retard makes no money LOL", "$" + str(random.randrange(0, 1000)), '<$50,000', '<$75,000', "$100,000",
+              "$125,000", "$150,000", "$175,000",
+              "$200,000+"]
+    location = ["Retard lives in his mom's basement LOL", "America", "United States", "Europe", "Poland", "Mexico",
+                "Russia", "Pakistan", "India",
+                "Some random third world country", "Canada", "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+                "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana",
+                "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
+                "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+                "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+                "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah",
+                "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
+    email = ["@gmail.com", "@yahoo.com", "@hotmail.com", "@outlook.com", "@protonmail.com", "@disposablemail.com",
+             "@aol.com", "@edu.com", "@icloud.com", "@gmx.net", "@yandex.com"]
+    dob = f'{random.randrange(1, 13)}/{random.randrange(1, 32)}/{random.randrange(1950, 2021)}'
+    name = ['James Smith', "Michael Smith", "Robert Smith", "Maria Garcia", "David Smith", "Maria Rodriguez",
+            "Mary Smith", "Maria Hernandez", "Maria Martinez", "James Johnson", "Catherine Smoaks", "Cindi Emerick",
+            "Trudie Peasley", "Josie Dowler", "Jefferey Amon", "Kyung Kernan", "Lola Barreiro",
+            "Barabara Nuss", "Lien Barmore", "Donnell Kuhlmann", "Geoffrey Torre", "Allan Craft",
+            "Elvira Lucien", "Jeanelle Orem", "Shantelle Lige", "Chassidy Reinhardt", "Adam Delange",
+            "Anabel Rini", "Delbert Kruse", "Celeste Baumeister", "Jon Flanary", "Danette Uhler", "Xochitl Parton",
+            "Derek Hetrick", "Chasity Hedge", "Antonia Gonsoulin", "Tod Kinkead", "Chastity Lazar", "Jazmin Aumick",
+            "Janet Slusser", "Junita Cagle", "Stepanie Blandford", "Lang Schaff", "Kaila Bier", "Ezra Battey",
+            "Bart Maddux", "Shiloh Raulston", "Carrie Kimber", "Zack Polite", "Marni Larson", "Justa Spear"]
+    phone = f'({random.randrange(0, 10)}{random.randrange(0, 10)}{random.randrange(0, 10)})-{random.randrange(0, 10)}{random.randrange(0, 10)}{random.randrange(0, 10)}-{random.randrange(0, 10)}{random.randrange(0, 10)}{random.randrange(0, 10)}{random.randrange(0, 10)}'
+    if user is None:
+        user = ctx.author
+        password = ['password', '123', 'mypasswordispassword', user.name + "iscool123", user.name + "isdaddy",
+                    "daddy" + user.name, "ilovediscord", "i<3discord", "furryporn456", "secret", "123456789", "apple49",
+                    "redskins32", "princess", "dragon", "password1", "1q2w3e4r", "ilovefurries"]
+        message = await ctx.send(f"`Hacking {user}...\n`")
+        await asyncio.sleep(1)
+        await message.edit(content=f"`Hacking {user}...\nHacking into the mainframe...\n`")
+        await asyncio.sleep(1)
+        await message.edit(content=f"`Hacking {user}...\nHacking into the mainframe...\nCaching data...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Hacking {user}...\nHacking into the mainframe...\nCaching data...\nCracking SSN information...\n`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Hacking {user}...\nHacking into the mainframe...\nCaching data...\nCracking SSN information...\nBruteforcing love life details...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Hacking {user}...\nHacking into the mainframe...\nCaching data...\nCracking SSN information...\nBruteforcing love life details...\nFinalizing life-span dox details\n`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"```Successfully hacked {user}\nName: {random.choice(name)}\nGender: {random.choice(gender)}\nAge: {age}\nHeight: {random.choice(height)}\nWeight: {weight}\nHair Color: {random.choice(hair_color)}\nSkin Color: {random.choice(skin_color)}\nDOB: {dob}\nLocation: {random.choice(location)}\nPhone: {phone}\nE-Mail: {user.name + random.choice(email)}\nPasswords: {random.choices(password, k=3)}\nOccupation: {random.choice(occupation)}\nAnnual Salary: {random.choice(salary)}\nEthnicity: {random.choice(ethnicity)}\nReligion: {random.choice(religion)}\nSexuality: {random.choice(sexuality)}\nEducation: {random.choice(education)}```")
+    else:
+        password = ['password', '123', 'mypasswordispassword', user.name + "iscool123", user.name + "isdaddy",
+                    "daddy" + user.name, "ilovediscord", "i<3discord", "furryporn456", "secret", "123456789", "apple49",
+                    "redskins32", "princess", "dragon", "password1", "1q2w3e4r", "ilovefurries"]
+        message = await ctx.send(f"`Hacking {user}...\n`")
+        await asyncio.sleep(1)
+        await message.edit(content=f"`Hacking {user}...\nHacking into the mainframe...\n`")
+        await asyncio.sleep(1)
+        await message.edit(content=f"`Hacking {user}...\nHacking into the mainframe...\nCaching data...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Hacking {user}...\nHacking into the mainframe...\nCaching data...\nCracking SSN information...\n`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Hacking {user}...\nHacking into the mainframe...\nCaching data...\nCracking SSN information...\nBruteforcing love life details...`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"`Hacking {user}...\nHacking into the mainframe...\nCaching data...\nCracking SSN information...\nBruteforcing love life details...\nFinalizing life-span dox details\n`")
+        await asyncio.sleep(1)
+        await message.edit(
+            content=f"```Successfully hacked {user}\nName: {random.choice(name)}\nGender: {random.choice(gender)}\nAge: {age}\nHeight: {random.choice(height)}\nWeight: {weight}\nHair Color: {random.choice(hair_color)}\nSkin Color: {random.choice(skin_color)}\nDOB: {dob}\nLocation: {random.choice(location)}\nPhone: {phone}\nE-Mail: {user.name + random.choice(email)}\nPasswords: {random.choices(password, k=3)}\nOccupation: {random.choice(occupation)}\nAnnual Salary: {random.choice(salary)}\nEthnicity: {random.choice(ethnicity)}\nReligion: {random.choice(religion)}\nSexuality: {random.choice(sexuality)}\nEducation: {random.choice(education)}```")
+
+@axeop.command()
+async def delemojis(ctx):
+    for emoji in list(ctx.list.emojis):
+        try:
+            await emoji.delete()
+        except:
+            await ctx.reply("Failed!  Most likely missing perms")
